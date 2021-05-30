@@ -1,0 +1,47 @@
+    
+version: "3"
+services:
+  todo-app:
+    container_name: xyz
+    build:
+      context: .
+      dockerfile: .Dockerfile
+    depends_on:
+      - postgres1
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/assignment
+      NODE_ENV: development
+      PORT: 4000
+      
+    ports:
+      - "4000:8080"
+  postgres:
+    container_name: postgres
+    image: postgres:10.4
+    ports:
+      - "5432:5432"
+      volumes:
+        - ./postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: employee
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:4.18
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@linuxhint.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+volumes:
+    db-data:
+    pgadmin-data:
